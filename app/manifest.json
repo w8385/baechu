@@ -15,22 +15,46 @@
     "192": "images/192.png",
     "256": "images/256.png"
   },
+  "permissions": [
+    "storage"
+  ],
+  "__chrome|edge__action": {
+    "default_popup": "index.html"
+  },
+  "__firefox|opera|safari__browser_action": {
+    "default_popup": "index.html"
+  },
   "background": {
-    "__firefox|opera|safari__scripts": ["scripts/background.js"],
+    "__firefox|opera|safari__scripts": [
+      "scripts/background.js"
+    ],
     "__chrome|edge__service_worker": "scripts/background.js"
   },
   "content_scripts": [
     {
-      "matches": ["https://www.acmicpc.net/contest/official/list*"],
-      "js": ["scripts/contests.js"],
-      "css": ["styles/label.css"],
+      "matches": [
+        "https://www.acmicpc.net/contest/official/list*"
+      ],
+      "js": [
+        "scripts/contests.js"
+      ],
+      "css": [
+        "styles/label.css"
+      ],
       "run_at": "document_idle",
       "all_frames": false
     },
     {
-      "matches": ["https://www.acmicpc.net/contest/view/*"],
-      "js": ["scripts/contest.js"],
-      "css": ["styles/contest.css", "styles/label.css"],
+      "matches": [
+        "https://www.acmicpc.net/contest/view/*"
+      ],
+      "js": [
+        "scripts/contest.js"
+      ],
+      "css": [
+        "styles/contest.css",
+        "styles/label.css"
+      ],
       "run_at": "document_idle",
       "all_frames": false
     }

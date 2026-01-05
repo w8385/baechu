@@ -45,3 +45,55 @@ function createIconLabel(key, text) {
   label.setAttribute('title', text);
   return label;
 }
+
+const HIDDEN_CLASS = 'baechu-hidden-by-extension';
+const visibilityState = {
+  'baechu-label-badge': true,
+  'baechu-label-background': true,
+  'baechu-label-warning': true,
+};
+
+/* CSS */
+const style = document.createElement('style');
+style.textContent = `
+  .${HIDDEN_CLASS} {
+    display: none !important;
+  }
+`;
+document.head.appendChild(style);
+
+function applyVisibility(className, visible) {
+  document.querySelectorAll(`.${className}`).forEach((el) => {
+    el.classList.toggle(HIDDEN_CLASS, !visible);
+  });
+}
+
+/* 초기 상태 로드 */
+ext.storage.local.get(null, (res) => {
+  Object.entries(res).forEach(([key, value]) => {
+    if (key.startsWith('baechu-label-')) {
+      visibilityState[key] = value;
+      applyVisibility(key, value);
+    }
+  });
+});
+
+/* popup 메시지 */
+ext.runtime.onMessage.addListener((msg) => {
+  if (msg.type === 'TOGGLE_CLASS_VISIBILITY') {
+    visibilityState[msg.className] = msg.visible;
+    applyVisibility(msg.className, msg.visible);
+  }
+});
+
+/* DOM 변화 감지 */
+const observer = new MutationObserver(() => {
+  Object.entries(visibilityState).forEach(([className, visible]) => {
+    applyVisibility(className, visible);
+  });
+});
+
+observer.observe(document.body, {
+  childList: true,
+  subtree: true,
+});
